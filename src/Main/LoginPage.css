@@ -1,0 +1,70 @@
+.formStyles{
+    display:flex;
+    justify-content: center;
+    font-family: Arial;
+}
+label{
+    color:black;
+    font-size: 20px;
+}
+.child{
+    border: 2px solid black;
+    padding:50px 50px 50px 50px;
+    background-color: bisque;
+}
+input[type="submit"]{
+    color:aliceblue;
+    background-color: black;
+    padding: 5px 5px 5px 5px;
+    margin-left: 145px;
+    font-size: 20px;
+    cursor: pointer;
+}
+input[type="submit"]:hover{
+border-radius: 5px;
+}
+input[type="email"],input[type="password"],input[type="text"]{
+    color:black;
+    font-size: 20px;
+    background-color: aliceblue;
+    padding: 5px 5px 5px 5px;
+    margin-left: 55px;
+    border-radius: 5px;
+}
+input[type="password"]{
+    margin-left: 26px;
+}
+input[type="text"]{
+    margin-left: 45px;
+}
+#myButton2{
+    color:red;
+    margin-left: 540px;
+    font-size: 20px;
+    font-family:serif;
+    border:2px solid black;
+    cursor: pointer;
+}
+#myButton2:hover{
+    color:aliceblue ;
+    background-color: black;
+    border-radius: 7px;
+    border:2px solid white;
+  }
+  .btn-go{
+    margin-left:600px;
+    border-radius:10px ;
+    font-size: 20px;
+    padding: 10px;
+    cursor:pointer;
+    color:red;
+    font-family:serif;
+    border:2px solid black;
+  }
+  .btn-go:hover{
+    border:2px solid white;
+    color:aliceblue ;
+    background-color: black;
+    font-weight: bold;
+    border-radius: 7px;
+  }

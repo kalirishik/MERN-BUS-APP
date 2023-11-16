@@ -1,0 +1,19 @@
+nav{
+    width: 100%;
+    background-color:black;
+}
+ul{
+    list-style:none;
+    display: flex;
+    justify-content:space-evenly;
+}
+.nav-link:hover{
+    color:aqua
+}
+.nav-link {
+    text-decoration: none; /* Apply this style to the Link component */
+    color: aliceblue;
+    font-size: 27px;
+    cursor:pointer;
+}
+

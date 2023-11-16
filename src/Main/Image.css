@@ -1,0 +1,43 @@
+img{
+    border: 2px solid black;
+    border-radius: 5px;
+    margin-left: 410px;
+}  
+  .slick-dots {
+    position: absolute;
+    bottom: 37px; 
+    left: 12px;
+    right: 0;
+    text-align: center;
+  }
+  .slick-dots li {
+    display: inline-block;
+    margin: 0 5px; 
+  }
+  .slick-dots li button {
+    font-size: 12px; 
+    width: 15px; 
+    height: 15px; 
+    border-radius: 50%;
+    background-color: #fff; 
+    border: 1px solid #ddd; 
+    cursor: pointer;
+  }
+  .slick-dots li.slick-active button {
+    background-color: #007bff; 
+  }
+#myButton1{
+    color:red;
+    margin-left: 660px;
+    font-size: 20px;
+    font-family:serif;
+    border:2px solid black;
+}
+#myButton1:hover{
+    color:aliceblue ;
+    background-color: black;
+    border-radius: 7px;
+    border:2px solid white;
+  }
+  
+  

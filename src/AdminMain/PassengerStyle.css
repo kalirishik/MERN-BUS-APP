@@ -1,0 +1,88 @@
+
+table {
+    border: 5px solid black;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 0.9em;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: white;
+    color: #333;
+    display: table;
+    table-layout: fixed;
+    font-weight: bold;
+    border-top: 5px solid;
+    border-radius: 0.5rem;
+    margin-bottom: 130px;
+    margin-left:15px;
+    width:98%;
+}
+  
+  table th {
+    background-color:#F875AA;
+    color:black;
+    font-weight: bold;
+    padding: 12px 15px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+  }
+  table td {
+    font-family: 'Courier New', Courier, monospace;
+    padding: 12px 15px;
+    font-size: 17px;
+  }
+   table tr:hover{
+        background-color:#45FFCA;
+  }
+  table, tr,td,th
+   {
+    border:1px solid black;
+    border-collapse: collapse;
+  }
+   input.search-box {
+    border-radius: 5px;
+    font-size: 30px;
+    width:250px;
+    height:50px;
+    border:none;
+    margin-left: 620px;
+    padding: 10px;
+    font-family:'Times New Roman', Times, serif;
+  }
+  .btn{
+    color:red;
+    /* background-color:black; */
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+  }
+  .btn:hover{color:black;font-weight:bolder;}
+  .btn-go{
+    margin-left:700px;
+    border-radius:10px ;
+    font-size: 20px;
+    padding: 10px;
+    cursor:pointer;
+    color:red;
+    font-family:serif;
+    border:2px solid black;
+  }
+  .btn-go:hover{
+    border:2px solid white;
+    color:aliceblue ;
+    background-color: black;
+    font-weight: bold;
+    border-radius: 7px;
+  }
+  .age-header{width:50px;}
+  .gender-header{width:82px;}
+  .category-header{width:100px;}
+  .seat-header{width:55px;}
+  .fare-header{width:68px;}
+  .time-header{width:67px;}
+  .book-header{width:100px;}
+  .service-header{width:98px;}
+
+  
