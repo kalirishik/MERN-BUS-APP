@@ -32,8 +32,8 @@ To run the project locally, follow these steps:
 1. Clone the repository.
 2. Install dependencies using `npm install`.
 3. Configure MongoDB connection in the backend.
-4. Run the backend server using `npm start` in the 'backend' directory.
-5. Run the frontend using `node index.js` in the 'frontend' directory.
+4. Run the backend server using `node index.js` in the 'backend' directory.
+5. Run the frontend using `npm start` in the 'frontend' directory.
 
 ## Contributing
 
