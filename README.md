@@ -1,22 +1,44 @@
 # MERN-BUS-APP
-A Bus ticket booking application made using MERN Stack (MongoDB, Express js, React js, Node js)
 
-The Bus ticket application is composed of the following Features:
+A Bus ticket booking application developed using the MERN Stack (MongoDB, Express.js, React.js, Node.js).
 
-Front-End:
-  -> Sign-In & Sign-Up Pages.
-  -> Has a profile page, which will display all information about the signed in user.
-  -> List of cities for users to choose from (starting city & destination city).
-  -> Getting list of bus's of different companies with various details.
-  -> Seat selection page has a very user friendly environment, which also generates dynamic forms for storing data's of passengers.
-  -> Final page has a ticket displaying component, it displays all passenger data.
+## Features
 
-Back-End:
-  -> Uses Express js based application for the backend process.
-  -> Uses MongoDB database for storing the collections.
-  -> This version does not support dynamic seat data being stored from cloud.  
+### Front-End:
+- Sign-In & Sign-Up Pages.
+- Profile Page: Displays information about the signed-in user.
+- City Selection: Choose starting and destination cities.
+- Bus List: View buses from different companies with various details.
+- Seat Selection: User-friendly environment with dynamic forms for passenger data.
+- Ticket Display: Final page displaying all passenger information.
 
-This project also demonstrates:
-    ==> a typcial React project layout structure
+### Back-End:
+- Express.js-based application for backend processing.
+- MongoDB database for storing collections.
+- Note: This version does not support dynamic seat data stored from the cloud.
 
-Project Gif:
+## Project Structure
+
+The project follows a typical React project layout structure.
+
+## Project Preview
+
+![Project Gif](link_to_your_project_gif.gif)
+
+## Getting Started
+
+To run the project locally, follow these steps:
+
+1. Clone the repository.
+2. Install dependencies using `npm install`.
+3. Configure MongoDB connection in the backend.
+4. Run the backend server using `npm start` in the 'backend' directory.
+5. Run the frontend using `npm start` in the 'frontend' directory.
+
+## Contributing
+
+Feel free to contribute to the project by opening issues or creating pull requests.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
