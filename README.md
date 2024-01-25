@@ -23,8 +23,8 @@ The project follows a typical React project layout structure.
 
 ## Project Preview
 
-![Bus1-gif](https://github.com/kalirishik/MERN-BUS-APP/assets/110583211/040cc886-a81f-4655-9006-c31920363230)
-![Bus2-gif](https://github.com/kalirishik/MERN-BUS-APP/assets/110583211/a538adaf-b751-4cac-bfa7-e2b1ab0d552d)
+![Bus1-gif](https://github.com/kalirishik/MERN-BUS-APP/assets/110583211/984972b4-39b8-4edd-90ce-815b73c758c9)
+![Bus2-gif](https://github.com/kalirishik/MERN-BUS-APP/assets/110583211/d0ed6685-27e1-4667-b7e3-4af0eb2bacba)
 ![Bus3-gif](https://github.com/kalirishik/MERN-BUS-APP/assets/110583211/efe0e491-24f3-4775-b1d4-896ab03aaa6c)
 ![Bus4-gif](https://github.com/kalirishik/MERN-BUS-APP/assets/110583211/8faf025f-60a9-4742-9256-b79f43460a33)
 ![Bus5-gif](https://github.com/kalirishik/MERN-BUS-APP/assets/110583211/034d954f-79b9-4831-8fbf-c85fd252f536)
