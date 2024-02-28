@@ -138,16 +138,16 @@ app.get("/passengerHistory",(req,res)=>{
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'kaliempire7@gmail.com', // Your Gmail email address
-    pass: 'jwaj srik dgge uime' // Your Gmail password
+    user: '', // Your Gmail email address
+    pass: '' // Your Gmail password
   }
 });
 // send booking email
 async function sendBookingEmail(passenger) {
   try {
     const mailOptions = {
-      from: 'kaliempire7@gmail.com',
-      to:useremail,
+      from: '',//your email
+      to:useremail, // user email
       subject: 'Booking Confirmation',
       html: `
       <!DOCTYPE html>
