@@ -2,12 +2,12 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
+import nodemailer from 'nodemailer';
 const port=3500;
 const app=express()
-app.use(cors())
+app.use(cors());
 app.use(express.json())
 app.listen(port,()=>console.log(`Server is Running on the port : ${port}`));
-// mongoose.connect("mongodb+srv://kalirishik:Kali%402003@kali.mstnhxl.mongodb.net/project")
 mongoose.connect("mongodb://127.0.0.1:27017/Project")
 .then(()=>console.log("Connected to database"))
 .catch(()=>console.log("Connection failed"))
@@ -51,32 +51,15 @@ const schemaModel3=mongoose.Schema({
 },{
     timestamps:true
 })
-const schemaModel4=mongoose.Schema({
-  name:String,
-  age:String,
-  phoneno:String,
-  gender:String,
-  category:String,
-  seatNo:String,
-  tripcode:String,
-  classService:String,
-  deptTime:String,
-  servicePoint:String,
-  destination:String,
-  adultFare:String,
-  childFare:String,
-  selectedDatetime:String
-},{
-    timestamps:true
-})
 const userModel1=mongoose.model("users",schemaModel1);
 const userModel2=mongoose.model("buslists",schemaModel2);
 const userModel3=mongoose.model("bookings",schemaModel3);
-// const userModel4=mongoose.model("bookings",schemaModel4);
-app.post("/display", async (req, res) => {
+let useremail=null;
+//signin
+app.post("/SignIn", async (req, res) => {
     try {
       const { email, password } = req.body;
-      if(email === "krhv2023@gmail.com" && password === "krhv@2023")
+      if(email === "krhv2024@gmail.com" && password === "krhv@2024")
        return res.json({ success: true, message: "Welcome Admin 👨🏻‍💻" ,redirectToAdmin:true});
       else{
           const user = await userModel1.findOne({ email });
@@ -85,9 +68,10 @@ app.post("/display", async (req, res) => {
           }
           else{
             if (user.password === password) {
-            return res.json({ success: true, message: "Login Successful 👍🏻" });
+              useremail=email;
+            return res.json({ success: true, message: "Login Successful 👍🏻 , Welcome "+user.username });
           } else {
-            return res.json({ success: false, message: "Incorrect password" });
+            return res.json({ success: false, message: "Incorrect password , please try again" });
           }
       }
     }
@@ -97,13 +81,8 @@ app.post("/display", async (req, res) => {
     }
   });
   
-// app.post("/create",async(req,res)=>{
-//     const data=new userModel(req.body);
-//     await data.save();
-//     console.log(req.body)
-//     res.json({success:true,message:"Registered Successfully"});
-// })
-app.post("/create", async (req, res) => {
+//signup
+app.post("/SignUp", async (req, res) => {
     try {
       const { email} = req.body;
       // Check if the email already exists in the database
@@ -120,42 +99,189 @@ app.post("/create", async (req, res) => {
       res.status(500).json({ success: false, message: "An error occurred" });
     }
   });
-  app.post("/storeData",async(req,res)=>{
-    try{
-      const data=new userModel3(req.body);
-      await data.save();
-      res.json({ success: true, message: "Ticket was successfully booked. 👍🏻" });
-    }catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: "An error occurred" });
+  //storedata
+app.post("/storeData", async (req, res) => {
+  try {
+    const requestData = req.body;
+
+    // If only one seat is selected, requestData will be an object, so we convert it to an array
+    const passengerDataArray = Array.isArray(requestData) ? requestData : [requestData];
+
+    // Iterate over each selected seat's passenger data and store it
+    const responses = await Promise.all(passengerDataArray.map(async (passenger) => {
+      const data = new userModel3(passenger);
+      return await data.save();
+    }));
+    const allSuccess = responses.every((response) => response);
+    if (allSuccess) {
+      res.json({ success: true, message: "Tickets were successfully booked" });
+      await Promise.all(passengerDataArray.map(async (passenger) => {
+        await sendBookingEmail(passenger);
+      }));
+    } else {
+      res.status(500).json({ success: false, message: "Some tickets were not booked" });
     }
-  })
-app.put("/update",async(req,res)=>{
-    const {_id,...rest}=req.body;
-    // const {_id,username}=req.body;
-    // await userModel.updateOne({_id:req.body._id},{username:"gokulraj_v"}); 
-//    {
-//     "_id":"654383706ca41486897b9993"
-//   }
-//    const data= await userModel.updateOne({_id:_id},{username:username});
-   const data= await userModel1.updateOne({_id:_id},rest);
-   //{
-    //     "_id":"654383706ca41486897b9993",
-    //     "username":"gokul_raj"
-    //   }
-    res.send({success:true,message:"Data has been updated",data:data})
-    console.log(req.body);
-})
-app.delete("/delete/:id",async(req,res)=>{
-    const id=req.params.id;
-    const data=await userModel1.deleteOne({_id:id});
-    console.log(req.params.id);
-    res.send({data:data});
-})
+  } catch (error) {
+    console.error("Error storing data:", error);
+    res.status(500).json({ success: false, message: "An error occurred while storing data" });
+  }
+});
 //search  bus
 app.get("/searchBus",(req,res)=>{
   userModel2.find().then((user)=>res.json(user)).catch((err)=>res.json(err));
 })
+//passengerHistory
 app.get("/passengerHistory",(req,res)=>{
   userModel3.find().then((user)=>res.json(user)).catch((err)=>res.json(err));
 })
+// create transport
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'kaliempire7@gmail.com', // Your Gmail email address
+    pass: 'jwaj srik dgge uime' // Your Gmail password
+  }
+});
+// send booking email
+async function sendBookingEmail(passenger) {
+  try {
+    const mailOptions = {
+      from: 'kaliempire7@gmail.com',
+      to:useremail,
+      subject: 'Booking Confirmation',
+      html: `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Booking Confirmation</title>
+        <style>
+            body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+          }
+          .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #FFF6E9;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+          }
+          h1 {
+            background-color: aqua;
+            text-align: center;
+          }
+          .booking-details {
+            margin-top: 20px;
+          }
+          p {
+            margin-bottom: 8px;
+          }
+          strong {
+            font-weight: bold;
+          }
+          .booking-details p:last-child {
+            margin-bottom: 0;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            border: 2px solid black;
+          }
+          th, td,tr {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid black;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>BOOKING DETAILS</h1>
+          <div class="booking-details">
+            <table>
+              <tr>
+                <td><strong>Name</strong></td>
+                <td>${passenger.name}</td>
+              </tr>
+              <tr>
+                <td><strong>Age</strong></td>
+                <td>${passenger.age}</td>
+              </tr>
+              <tr>
+                <td><strong>Phone No</strong></td>
+                <td>${passenger.phoneno}</td>
+              </tr>
+              <tr>
+                <td><strong>Gender</strong></td>
+                <td>${passenger.gender}</td>
+              </tr>
+              <tr>
+                <td><strong>Category</strong></td>
+                <td>${passenger.category}</td>
+              </tr>
+              <tr>
+                <td><strong>Seat No</strong></td>
+                <td>${passenger.seatNo}</td>
+              </tr>
+              <tr>
+                <td><strong>Trip Code</strong></td>
+                <td>${passenger.tripcode}</td>
+              </tr>
+              <tr>
+                <td><strong>Class Service</strong></td>
+                <td>${passenger.classService}</td>
+              </tr>
+              <tr>
+                <td><strong>Via Route</strong></td>
+                <td>${passenger.viaRoute}</td>
+              </tr>
+              <tr>
+                <td><strong>Route No</strong></td>
+                <td>${passenger.routeNo}</td>
+              </tr>
+              <tr>
+                <td><strong>Departure Time</strong></td>
+                <td>${passenger.deptTime}</td>
+              </tr>
+              <tr>
+                <td><strong>Service Point</strong></td>
+                <td>${passenger.servicePoint}</td>
+              </tr>
+              <tr>
+                <td><strong>Destination</strong></td>
+                <td>${passenger.destination}</td>
+              </tr>
+              <tr>
+                <td><strong>Adult Fare</strong></td>
+                <td>${passenger.adultFare}</td>
+              </tr>
+              <tr>
+                <td><strong>Child Fare</strong></td>
+                <td>${passenger.childFare}</td>
+              </tr>
+              <tr>
+                <td><strong>Selected Date Time</strong></td>
+                <td>${passenger.selectedDatetime}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </body>
+      </html>
+           
+      `
+    };
+    console.log(mailOptions);
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully');
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw new Error('Failed to send email');
+  }
+}
