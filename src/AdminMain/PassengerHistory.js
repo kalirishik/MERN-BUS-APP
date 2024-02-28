@@ -27,7 +27,7 @@ const PassengerHistory = () => {
         name="search2"
         onChange={Filter}
         className="search-box" autoFocus
-        placeholder="Search name...🔎"
+        placeholder="Search name...🔎"  style={{width:250}}
       />
       <br />
       <br />

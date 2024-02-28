@@ -5,7 +5,7 @@ const ServicePage = () => {
     <>
         <h1>OUR SERVICES  <BsBusFront style={{fontSize:35,marginTop:10}}/></h1>
         <div className="parent">
-            <div className="child1">
+            <div className="child1" style={{width:320}}>
                 <h3>RAMESHWARAM</h3>
                 <p>RAMESHWARAM --&gt; MADURAI</p>
                 <p>RAMESHWARAM --&gt; SIVAKASI</p>

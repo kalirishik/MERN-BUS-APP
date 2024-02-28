@@ -21,6 +21,7 @@ const BookPage = () => {
               childFare={childFare}
               selectedDatetime={selectedDatetime}
         />
+        <br/>
         <LoginFooter/>
     </div>
   )

@@ -3,7 +3,7 @@ import React from 'react';
 function Contact() {
   return (
     <div className="containerStyle">
-      <h1>Contact Us</h1>
+      <h1>CONTACT US</h1>
       <h4>If you have any questions or need assistance, please feel free to contact us:</h4>
       
       <div className="infoStyle">

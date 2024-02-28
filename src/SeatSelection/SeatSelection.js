@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Tab.css";
@@ -23,139 +23,122 @@ export default function SeatSelection({
     gender: "",
     category: "",
     seatNo: "",
+    tripcode,
+    classService,
+    viaRoute,
+    routeNo,
+    deptTime,
+    servicePoint,
+    destination,
+    adultFare,
+    childFare,
+    selectedDatetime,
   };
-  const [formData, setFormData] = useState({
-    name: "",
-    age: "",
-    phoneno: "",
-    gender: "",
-    category: "",
-    seatNo: "",
-    tripcode: tripcode,
-    classService: classService,
-    viaRoute: viaRoute,
-    routeNo: routeNo,
-    deptTime: deptTime,
-    servicePoint: servicePoint,
-    destination: destination,
-    adultFare: adultFare,
-    childFare: childFare,
-    selectedDatetime: selectedDatetime,
-  });
+  const [passengers, setPassengers] = useState([]);
   const navigate = useNavigate();
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [reservedSeats, setReservedSeats] = useState([
-    "1A",
-    "2A",
-    "2B",
-    "3B",
-    "4A",
-    "5C",
-    "6A",
-    "7B",
-    "7C",
-    "8B",
-    "9B",
-    "9C",
-  ]);
 
   const getSeatNumber = (e) => {
     const newSeat = e.target.value;
-    if (!reservedSeats.includes(newSeat) && !selectedSeats.includes(newSeat)) {
+    if (!selectedSeats.includes(newSeat)) {
       setSelectedSeats([...selectedSeats, newSeat]);
-    } else if (selectedSeats.includes(newSeat)) {
+      setPassengers((prevPassengers) => [
+        ...prevPassengers,
+        {
+          ...initialPassengerData,
+          seatNo: newSeat,
+        },
+      ]);
+    } else {
       setSelectedSeats(selectedSeats.filter((seat) => seat !== newSeat));
+      setPassengers((prevPassengers) =>
+        prevPassengers.filter((passenger) => passenger.seatNo !== newSeat)
+      );
     }
-  };
-  const handleChange = (e, name) => {
-    const { value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
   };
 
+  const handleChange = (e, index, name) => {
+    const { value } = e.target;
+    const newPassengers = [...passengers];
+    newPassengers[index][name] = value;
+    setPassengers(newPassengers);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      formData.name.trim() === "" ||
-      formData.age.trim() === "" ||
-      formData.phoneno.trim() === "" ||
-      formData.gender.trim() === "" ||
-      formData.category.trim() === ""
-    ) {
-      alert("Please fill in all the fields before booking.");
+    
+    if (passengers.length === 0) {
+      alert("Please select at least one seat.");
       return;
-    } else {
-      const data = {
-        ...formData,
-        seatNo: selectedSeats[0], // Assuming only one seat is selected
-      };
-      const response = await axios.post("/storeData", data);
-      console.log(response);
-      if (response.data.success) {
-        setFormData({
-          name: "",
-          age: "",
-          phoneno: "",
-          gender: "",
-          category: "",
-          seatNo: "",
-          tripcode: tripcode,
-          classService: classService,
-          viaRoute: viaRoute,
-          routeNo: routeNo,
-          deptTime: deptTime,
-          servicePoint: servicePoint,
-          destination: destination,
-          adultFare: adultFare,
-          childFare: childFare,
-          selectedDatetime: selectedDatetime,
-        });
-        setSelectedSeats([]);
-        alert(response.data.message);
+    }
+    
+    // Check if all passenger details are filled for selected seats
+    const isAnyPassengerDataMissing = passengers.some(
+      (passenger) =>
+        !passenger.name ||
+        !passenger.age ||
+        !passenger.phoneno ||
+        !passenger.gender ||
+        !passenger.category
+        );
+        
+        if (isAnyPassengerDataMissing) {
+          alert("Please fill passenger details for all selected seats.");
+          return;
+        }
+    try {
+      const responses = await Promise.all(
+        passengers.map(async (passenger) => {
+          return await axios.post("/storeData", passenger);
+        })
+      );
+
+      const allSuccess = responses.every((response) => response.data.success);
+      if (allSuccess) {
+        alert("Your Tickets was  booked successfully");
         navigate("/");
       } else {
-        alert("Ticket was not booked");
+        alert("Some tickets were not booked");
       }
+    } catch (error) {
+      console.error("Error booking tickets:", error);
+      alert("Error booking tickets");
     }
   };
-  const renderPassengerData = (formData, index) => {
-    return (
+
+  const renderPassengerForms = () => {
+    return selectedSeats.map((seat, index) => (
       <form key={index} className="form seatfrm">
         <br />
-        <p className="text-capitalize text-center">
-          SEAT NO: {selectedSeats[index]}
-        </p>
+        <p className="text-capitalize text-center">SEAT NO: {seat}</p>
         <br />
         <br />
         <input
           className="form-control seatInp"
-          onChange={(e) => handleChange(e, "name")}
+          onChange={(e) => handleChange(e, index, "name")}
           type="text"
           required
-          name="name"
+          name={`name ${index}`}
           placeholder="Enter Name"
         />
         <br />
         <br />
         <input
           className="form-control seatInp seatInp2"
-          onChange={(e) => handleChange(e, "age")}
+          onChange={(e) => handleChange(e, index, "age")}
           type="number"
-          name="age"
-          placeholder="Enter Age"
           required
+          name={`age ${index}`}
+          placeholder="Enter Age"
         />
         <br />
         <br />
         <input
           className="form-control seatInp seatInp2"
-          onChange={(e) => handleChange(e, "phoneno")}
+          onChange={(e) => handleChange(e, index, "phoneno")}
           type="number"
-          name="phoneno"
-          placeholder="Enter Phoneno"
           required
+          name={`phoneno ${index}`}
+          placeholder="Enter Phoneno"
         />
         <br />
         <br />
@@ -164,12 +147,11 @@ export default function SeatSelection({
           <input
             className="form-check-input"
             type="radio"
-            name="gender"
+            name={`gender${index}`}
             value="male"
-            checked={formData.gender === "male"}
-            onChange={(e) => handleChange(e, "gender")}
+            onChange={(e) => handleChange(e, index, "gender")}
           />
-          <label className="form-check-label" htmlFor="male">
+          <label className="form-check-label" htmlFor={`male${index}`}>
             Male
           </label>
         </div>
@@ -177,12 +159,11 @@ export default function SeatSelection({
           <input
             className="form-check-input"
             type="radio"
-            name="gender"
+            name={`gender${index}`}
             value="female"
-            checked={formData.gender === "female"}
-            onChange={(e) => handleChange(e, "gender")}
+            onChange={(e) => handleChange(e, index, "gender")}
           />
-          <label className="form-check-label" htmlFor="female">
+          <label className="form-check-label" htmlFor={`female${index}`}>
             Female
           </label>
         </div>
@@ -192,12 +173,11 @@ export default function SeatSelection({
           <input
             className="form-check-input"
             type="radio"
-            name="category"
+            name={`category${index}`}
             value="adult"
-            checked={formData.category === "adult"}
-            onChange={(e) => handleChange(e, "category")}
+            onChange={(e) => handleChange(e, index, "category")}
           />
-          <label className="form-check-label" htmlFor="adult">
+          <label className="form-check-label" htmlFor={`adult${index}`}>
             Adult
           </label>
         </div>
@@ -205,18 +185,17 @@ export default function SeatSelection({
           <input
             className="form-check-input"
             type="radio"
-            name="category"
+            name={`category${index}`}
             value="child"
-            checked={formData.category === "child"}
-            onClick={(e) => handleChange(e, "category")}
+            onChange={(e) => handleChange(e, index, "category")}
           />
-          <label className="form-check-label" htmlFor="child">
+          <label className="form-check-label" htmlFor={`child${index}`}>
             Child
           </label>
         </div>
         <br />
       </form>
-    );
+    ));
   };
 
   return (
@@ -224,13 +203,13 @@ export default function SeatSelection({
       <div className="row">
         <div className="column1">
           <div className="plane">
-            <h2>SEAT LAYOUT</h2>
+            <h2 style={{ marginLeft: 170 }}>SEAT LAYOUT</h2>
             <form onChange={(e) => getSeatNumber(e)}>
               <ol className="cabin fuselage">
                 <li className="row row--1">
                   <ol className="seats" type="A">
                     <li className="seat">
-                      <input type="checkbox" disabled value="1A" id="1A" />
+                      <input type="checkbox" value="1A" id="1A" />
                       <label htmlFor="1A">1A</label>
                     </li>
                     <li className="seat">
@@ -239,14 +218,15 @@ export default function SeatSelection({
                     </li>
                   </ol>
                 </li>
+
                 <li className="row row--2">
                   <ol className="seats" type="A">
                     <li className="seat">
-                      <input type="checkbox" disabled value="2A" id="2A" />
+                      <input type="checkbox"  value="2A" id="2A" />
                       <label htmlFor="2A">2A</label>
                     </li>
                     <li className="seat">
-                      <input type="checkbox" disabled value="2B" id="2B" />
+                      <input type="checkbox"  value="2B" id="2B" />
                       <label htmlFor="2B">2B</label>
                     </li>
                   </ol>
@@ -258,7 +238,7 @@ export default function SeatSelection({
                       <label htmlFor="3A">3A</label>
                     </li>
                     <li className="seat">
-                      <input type="checkbox" disabled value="3B" id="3B" />
+                      <input type="checkbox"  value="3B" id="3B" />
                       <label htmlFor="3B">3B</label>
                     </li>
                   </ol>
@@ -266,7 +246,7 @@ export default function SeatSelection({
                 <li className="row row--4">
                   <ol className="seats" type="A">
                     <li className="seat">
-                      <input type="checkbox" disabled value="4A" id="4A" />
+                      <input type="checkbox"  disabled value="4A" id="4A" />
                       <label htmlFor="4A">4A</label>
                     </li>
                     <li className="seat">
@@ -282,7 +262,7 @@ export default function SeatSelection({
                       <label htmlFor="5A">5A</label>
                     </li>
                     <li className="seat">
-                      <input type="checkbox" value="5B" id="5B" />
+                      <input type="checkbox" disabled value="5B" id="5B" />
                       <label htmlFor="5B">5B</label>
                     </li>
                   </ol>
@@ -290,7 +270,7 @@ export default function SeatSelection({
                 <li className="row row--6">
                   <ol className="seats" type="A">
                     <li className="seat">
-                      <input type="checkbox" disabled value="6A" id="6A" />
+                      <input type="checkbox"   disabled value="6A" id="6A" />
                       <label htmlFor="6A">6A</label>
                     </li>
                     <li className="seat">
@@ -306,7 +286,7 @@ export default function SeatSelection({
                       <label htmlFor="7A">7A</label>
                     </li>
                     <li className="seat">
-                      <input type="checkbox" disabled value="7B" id="7B" />
+                      <input type="checkbox"  disabled value="7B" id="7B" />
                       <label htmlFor="7B">7B</label>
                     </li>
                   </ol>
@@ -318,7 +298,7 @@ export default function SeatSelection({
                       <label htmlFor="8A">8A</label>
                     </li>
                     <li className="seat">
-                      <input type="checkbox" disabled value="8B" id="8B" />
+                      <input type="checkbox"  value="8B" id="8B" />
                       <label htmlFor="8B">8B</label>
                     </li>
                   </ol>
@@ -338,7 +318,7 @@ export default function SeatSelection({
                 <li className="row row--10">
                   <ol className="seats" type="A">
                     <li className="seat">
-                      <input type="checkbox" value="10A" id="10A" />
+                      <input type="checkbox"  disabled value="10A" id="10A" />
                       <label htmlFor="10A">10A</label>
                     </li>
                     <li className="seat">
@@ -354,18 +334,11 @@ export default function SeatSelection({
         </div>
         <div className="column2">
           <div className="seatInfo">
-            <form className="form-group">
-              {selectedSeats.map((seat, index) => (
-                <div key={index}>
-                  {renderPassengerData(formData, index)}
-                  <button
-                    className="btn btn-info seatBT"
-                    onClick={(e) => handleSubmit(e, index)}
-                  >
-                    BOOK
-                  </button>
-                </div>
-              ))}
+            <form className="form-group" onSubmit={handleSubmit}>
+              {renderPassengerForms()}
+              <button className="btn btn-info seatBT" type="submit">
+                BOOK
+              </button>
             </form>
           </div>
         </div>

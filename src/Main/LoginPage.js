@@ -4,8 +4,10 @@ import { useState } from "react";
 import axios from "axios";
 import AdminPage from "../AdminMain/AdminPage";
 import SearchBus from "../SearchMain/SearchBus";
+import {useNavigate} from "react-router-dom";
 export default function LoginPage({ setShowLogin }) {
   axios.defaults.baseURL = "http://localhost:3500";
+  const navigate=useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,14 +20,15 @@ export default function LoginPage({ setShowLogin }) {
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await axios.post("/display", formData);
+    const data = await axios.post("/SignIn", formData);
     console.log(data);
     if (data.data.success) {
       if (data.data.redirectToAdmin) {
-        setAdminRedirect(true);
         alert(data.data.message);
+        navigate("/AdminPanel");
+        // setAdminRedirect(true);
       } else {
-        setFormData(false);
+        setFormData({});
         setShowBus(true);
         alert(data.data.message);
       }
@@ -42,8 +45,7 @@ export default function LoginPage({ setShowLogin }) {
   };
   return (
     <div>
-      {!adminRedirect?(
-         !showLoginPage ? (
+         {!showLoginPage ? (
           !showBus ? (
             <div>
               <div className="formStyles">
@@ -96,10 +98,7 @@ export default function LoginPage({ setShowLogin }) {
         ) : (
           <RegisterPage />
         )
-      ):(
-        <AdminPage setAdminRedirect={setAdminRedirect} />
-      )
-      }
+        }
     </div>
   );
 }

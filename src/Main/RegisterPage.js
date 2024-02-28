@@ -16,7 +16,7 @@ export default function RegisterPage() {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = await axios.post("/create", formData);
+        const data = await axios.post("/SignUp", formData);
         console.log(data);
         if (data.data.success) {
             setFormData({
